@@ -9,11 +9,9 @@ from rest_framework import status
 # Create your views here.
 
 class PropertiesEndpoint(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self,request):
-        permission_classes = [permissions.AllowAny]
-
-        
-
         properties = Properties.objects.all()
         title = request.query_params.get('title',None)
         location = request.query_params.get('location',None)
@@ -21,16 +19,21 @@ class PropertiesEndpoint(APIView):
         pricing_range = request.query_params.get('pricing',None)
         property_size = request.query_params.get('size',None)
         property_type = request.query_params.get('property_type',None)
-        if title!= None:
+        if title:
             properties=properties.filter(title = title)
-        if location!=None:
+        if location:
             properties=properties.filter(location= location)
-        # if pricing_range!=None:
-        #     match(pricing_range):
-        #         case'1000 - 5000':
-        #             if  properties.
-        if property_size!= None:
-            properties=properties.filter(size = property_size)
+        if pricing_range:
+            properties = properties.filter(pricing_range = pricing_range)
+            # match(pricing_range):
+            #     case'1000 - 5000':
+            #         properties = properties.filter(price_gt = 1000, price_lt = 5000)
+            #     case '5000 - 1000':
+            #         properties = properties.filter(price_gt = 5000, price_lt = 10000)
+            #     case '10000 - 15000':
+            #         properties = properties.filter(price_gt = 10000, price_lt = 15000)
+        if property_size:
+            properties=properties.filter(property_size = property_size)
 
         # print(properties)
 
@@ -38,6 +41,7 @@ class PropertiesEndpoint(APIView):
         return Response(serializer.data,status=status.HTTP_200_OK)
     
 class SpecificPropertyEndpoint(APIView):
+    permission_classes = [permissions.AllowAny]
     def get(self,request,id):
         permission_classes = [permissions.AllowAny]
         serializer = PropertySerializer

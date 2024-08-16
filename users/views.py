@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import RefreshToken,AccessToken
 # Create your views here.
 
 class UserRegistrationView(APIView):
@@ -33,12 +33,10 @@ class UserLoginView(APIView):
         #     print(username) | "Empty"
 
         user = authenticate(username=username,password=password)
-        print(user)
-        us = User.objects.get(username = username)
-        # us.set_password('Damola')
-        print (us)
+        
 
         if user is not None:
+            print("User is not none and request received")
             access =  AccessToken.for_user(user)
             return Response({
                 'access': str(access),
